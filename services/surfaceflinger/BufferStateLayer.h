@@ -115,6 +115,7 @@ private:
                                  nsecs_t requestedPresentTime);
 
     bool latchSidebandStream(bool& recomputeVisibleRegions) override;
+    void preparePerFrameCompositionState() override;
 
     bool hasFrameUpdate() const override;
 
