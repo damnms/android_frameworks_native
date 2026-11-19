@@ -115,6 +115,7 @@ public:
 protected:
     void gatherBufferInfo() override;
     uint64_t getHeadFrameNumber(nsecs_t expectedPresentTime) const;
+    void preparePerFrameCompositionState() override;
 
 private:
     bool updateFrameEventHistory(const sp<Fence>& acquireFence, nsecs_t postedTime,

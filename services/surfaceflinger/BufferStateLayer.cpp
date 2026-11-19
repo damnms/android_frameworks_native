@@ -28,6 +28,7 @@
 #include <limits>
 
 #include <compositionengine/LayerFECompositionState.h>
+#include <cutils/properties.h>
 #include <gui/BufferQueue.h>
 #include <private/gui/SyncFeatures.h>
 #include <renderengine/Image.h>
@@ -682,6 +683,18 @@ void BufferStateLayer::HwcSlotGenerator::eraseBufferLocked(const client_cache_t&
 
     mFreeHwcCacheSlots.push(hwcCacheSlot);
     mCachedBuffers.erase(clientCacheId);
+}
+
+void BufferStateLayer::preparePerFrameCompositionState() {
+    BufferLayer::preparePerFrameCompositionState();
+
+    // Some HWC1 composers show buffers of SurfaceControl layers (e.g. Chromium's child
+    // surface) garbled as overlays although they render correctly with GPU composition.
+    static const bool sForceClientComposition =
+            property_get_bool("debug.sf.client_composition_buffer_state", false);
+    if (sForceClientComposition) {
+        editCompositionState()->forceClientComposition = true;
+    }
 }
 
 void BufferStateLayer::gatherBufferInfo() {
